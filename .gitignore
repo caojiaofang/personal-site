@@ -1,0 +1,11 @@
+node_modules/
+output/
+.deploy/
+dist/
+
+# 本地配置与密钥不进入版本库。
+.env
+.env.*
+!.env.example
+*.pem
+*.key

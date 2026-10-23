@@ -1,0 +1,5 @@
+# 部署脚本在 Linux 执行，检出时保留 LF 换行。
+*.sh text eol=lf
+
+# 域名验证文件按原始字节保存。
+f28bbce1a74e761225dfa2c15690a66b.txt -text

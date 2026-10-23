@@ -1,0 +1,19 @@
+{
+  "name": "unfinished-personal-site",
+  "version": "5.0.0",
+  "type": "module",
+  "private": true,
+  "description": "未完：个人主页与实验室",
+  "scripts": {
+    "dev": "node scripts/build.mjs && node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node --test tests/lab-state.test.mjs tests/writing.test.mjs tests/qr.test.mjs",
+    "note:import": "node scripts/import-note.mjs",
+    "deploy": "node deploy/deploy.mjs"
+  },
+  "devDependencies": {
+    "jsqr": "1.4.0",
+    "pngjs": "7.0.0"
+  }
+}
