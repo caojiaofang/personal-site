@@ -41,4 +41,4 @@ npm run dev
 
 `npm run deploy` 自动检查并构建，再将 `dist/` 打包上传。公开目录只包含静态页面和资源；开发脚本、内容源文件、说明文档、SSH 密钥和证书不进入发布包。
 
-正式访问地址：https://www.zf-yun.cn/ 。默认发布到 z236（`60.205.105.236`），使用 Docker Compose 管理 `nginx-web` 容器，通过 `/opt/nginx/html/personal-site` 提供文件。Compose 配置位于 `/opt/personal-site/compose.yaml`，证书只保存在服务器上。迁移时保留 z11 的原站点，由域名 A 记录决定正式流量入口。具体发布、首次初始化和回滚方式见 `deploy/README.md`。
+正式访问地址：https://www.zf-yun.cn/ 。默认发布到 z236（`60.205.105.236`），使用 Docker Compose 管理 `nginx-web` 容器，通过 `/opt/nginx/html/personal-site` 提供文件。Compose 配置位于 `/opt/personal-site/compose.yaml`，证书只保存在服务器上。2026-11-12 已删除 z11 上本站的页面、Nginx 站点配置、专用证书和全部部署备份，z11 的共用 Nginx 及其他业务继续保留。具体发布、首次初始化和回滚方式见 `deploy/README.md`。
