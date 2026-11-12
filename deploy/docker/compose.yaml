@@ -1,0 +1,33 @@
+name: personal-site
+services:
+  web:
+    image: ${NGINX_IMAGE:?请在服务器的 .env 中设置已校验的 Nginx 镜像 ID}
+    pull_policy: never
+    container_name: nginx-web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /opt/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/nginx/conf.d:/etc/nginx/conf.d:ro
+      - /opt/nginx/html:/etc/nginx/html:ro
+      - /opt/nginx/cert:/etc/nginx/cert:ro
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

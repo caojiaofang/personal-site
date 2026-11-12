@@ -37,8 +37,8 @@ npm run dev
 
 二维码工具地址为 `/tools/qr/`。输入文字或完整链接后自动生成，内容按 UTF-8 编码并保留空格和换行，最多 2,000 字节。支持 L/M/Q/H 纠错、512/1024/2048 像素 PNG 和 SVG 下载；生成与下载均在当前浏览器完成，不上传、不保存输入。源码与许可来源见 `vendor/README.md`。
 
-## z11 部署
+## z236 Docker 部署
 
 `npm run deploy` 自动检查并构建，再将 `dist/` 打包上传。公开目录只包含静态页面和资源；开发脚本、内容源文件、说明文档、SSH 密钥和证书不进入发布包。
 
-正式访问地址：https://www.zf-yun.cn/ 。使用服务器现有的 `nginx-web` 容器，通过 `/opt/nginx/html/personal-site` 提供文件；独立域名配置不覆盖其他站点。具体发布和回滚方式见 `deploy/README.md`。
+正式访问地址：https://www.zf-yun.cn/ 。默认发布到 z236（`60.205.105.236`），使用 Docker Compose 管理 `nginx-web` 容器，通过 `/opt/nginx/html/personal-site` 提供文件。Compose 配置位于 `/opt/personal-site/compose.yaml`，证书只保存在服务器上。迁移时保留 z11 的原站点，由域名 A 记录决定正式流量入口。具体发布、首次初始化和回滚方式见 `deploy/README.md`。

@@ -2,6 +2,7 @@ node_modules/
 output/
 .deploy/
 dist/
+.idea/
 
 # 本地配置与密钥不进入版本库。
 .env

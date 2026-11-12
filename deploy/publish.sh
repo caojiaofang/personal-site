@@ -69,19 +69,20 @@ install -m 644 "$upload/personal-site.conf" "$conf"
 docker exec nginx-web nginx -t
 docker exec nginx-web nginx -s reload
 # 允许 Nginx worker 完成平滑切换，检查精确页面内容而不只检查状态码。
+# 发布探测固定使用 HTTP/1.1，兼容服务器自带的旧版 curl，仍完整验证 HTTPS 证书。
 verified=0
 for attempt in 1 2 3 4 5; do
-    if curl -fsS --max-time 5 --resolve 'www.zf-yun.cn:443:127.0.0.1' https://www.zf-yun.cn/ -o "$backup/deployed-index.html" && cmp -s "$target/index.html" "$backup/deployed-index.html"; then verified=1; break; fi
+    if curl --http1.1 -fsS --max-time 5 --resolve 'www.zf-yun.cn:443:127.0.0.1' https://www.zf-yun.cn/ -o "$backup/deployed-index.html" && cmp -s "$target/index.html" "$backup/deployed-index.html"; then verified=1; break; fi
     sleep 1
 done
 test "$verified" = 1
-sha256sum -c "$backup/other-configs.sha256"
+if [ -s "$backup/other-configs.sha256" ]; then sha256sum -c "$backup/other-configs.sha256"; fi
 while IFS= read -r page; do
     [ "$page" != '404.html' ] || continue
     case "$page" in */index.html) page=${page%index.html} ;; esac
-    curl -fsS --max-time 10 --resolve 'www.zf-yun.cn:443:127.0.0.1' "https://www.zf-yun.cn/$page" -o /dev/null
+    curl --http1.1 -fsS --max-time 10 --resolve 'www.zf-yun.cn:443:127.0.0.1' "https://www.zf-yun.cn/$page" -o /dev/null
 done < <(awk '{ print $2 }' "$backup/public-files.sha256")
-test "$(curl -sS -o /dev/null --max-time 10 --resolve 'www.zf-yun.cn:443:127.0.0.1' -w '%{http_code}' https://www.zf-yun.cn/page-that-does-not-exist/)" = 404
+test "$(curl --http1.1 -sS -o /dev/null --max-time 10 --resolve 'www.zf-yun.cn:443:127.0.0.1' -w '%{http_code}' https://www.zf-yun.cn/page-that-does-not-exist/)" = 404
 trap - ERR
 printf '部署成功\nURL: https://www.zf-yun.cn/\n备份: %s\n' "$backup"
 sha256sum "$target/index.html" "$target/style.css" "$target/app.js"

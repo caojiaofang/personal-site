@@ -6,7 +6,7 @@ import { mkdirSync } from 'node:fs';
 
 const deployRoot = fileURLToPath(new URL('./', import.meta.url));
 const projectRoot = path.dirname(deployRoot.slice(0, -1));
-const server = process.argv[2] || 'z11';
+const server = process.argv[2] || 'z236';
 if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(server)) throw new Error('SSH 别名格式无效');
 const release = new Date().toISOString().replace(/[-:.]/g, '') + '-' + randomUUID().slice(0, 8);
 const remoteDirectory = `/tmp/personal-site-${release}`;
@@ -24,6 +24,7 @@ mkdirSync(packageDirectory, { recursive: true });
 const archive = path.join(packageDirectory, `site-${release}.tar.gz`);
 run('tar', ['-czf', archive, '-C', path.join(projectRoot, 'dist'), '.']);
 run('ssh', ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', server, `mkdir -m 700 '${remoteDirectory}'`]);
-const files = [archive, path.join(deployRoot, 'personal-site.conf'), path.join(deployRoot, 'publish.sh')];
+const siteConfig = path.join(deployRoot, ...(server === 'z236' ? ['docker', 'personal-site.conf'] : ['personal-site.conf']));
+const files = [archive, siteConfig, path.join(deployRoot, 'publish.sh')];
 run('scp', ['-o', 'BatchMode=yes', ...files, `${server}:${remoteDirectory}/`]);
 run('ssh', ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', server, `bash '${remoteDirectory}/publish.sh' '${remoteDirectory}' 'site-${release}.tar.gz'`]);
